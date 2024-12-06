@@ -5,6 +5,7 @@ import sun from '../img/sun.jpg'
 import cloud from '../img/cloud.jpg'
 import rain from '../img/rain.jpeg'
 import { Link } from 'react-router-dom'
+import fog from '../img/nebbia.webp'
 
 const MyMeteo = ({ city, setCity }) => {
   const [temperature, setTemperature] = useState(null)
@@ -12,6 +13,18 @@ const MyMeteo = ({ city, setCity }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [weatherIcon, setWeatherIcon] = useState('')
+
+  // Lista di città predefinite per usare il bottone che porterà ad avere città random nella home
+  const cityList = [
+    'Torino',
+    'Bruxelles',
+    'Monaco',
+    'Madagascar',
+    'Osaka',
+    'Brooklyn',
+    'Lapponia',
+    'Los Angeles',
+  ]
 
   useEffect(() => {
     if (!city) return
@@ -26,6 +39,7 @@ const MyMeteo = ({ city, setCity }) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.cod !== 200) {
+          console.log(data)
           setError(`Errore: ${data.message}`)
           setLoading(false)
           return
@@ -55,9 +69,16 @@ const MyMeteo = ({ city, setCity }) => {
         return `${rain}`
       case 'Snow':
         return `${snow}`
+      case 'Fog':
+        return `${fog}`
       default:
         return `${''}`
     }
+  }
+
+  const handleRandomCity = () => {
+    const randomCity = cityList[Math.floor(Math.random() * cityList.length)]
+    setCity(randomCity)
   }
 
   if (loading)
@@ -73,6 +94,7 @@ const MyMeteo = ({ city, setCity }) => {
         />
       </div>
     )
+
   if (error)
     return (
       <h2 className="text-center mt-4 text-light">In attesa della Città...</h2>
@@ -81,7 +103,9 @@ const MyMeteo = ({ city, setCity }) => {
   return (
     <>
       <div className="text-center mt-3">
-        <Button className="btn btn-info">Random City</Button>
+        <Button onClick={handleRandomCity} className="btn btn-info">
+          Random City
+        </Button>
       </div>
       <Container className="mt-5">
         <Row className="justify-content-center">
@@ -98,6 +122,8 @@ const MyMeteo = ({ city, setCity }) => {
                     ? 'blue'
                     : weatherIcon === `${cloud}`
                     ? 'gray'
+                    : weatherIcon === `${fog}`
+                    ? 'whitesmoke'
                     : 'white',
               }}
             >
@@ -113,7 +139,7 @@ const MyMeteo = ({ city, setCity }) => {
                 <Card.Text className="mt-4">
                   <Link to={`/details/${city}`}>
                     <Button variant="outline-primary" className="btn-lg">
-                      See Details
+                      Mostra dettagli
                     </Button>
                   </Link>
                 </Card.Text>

@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react'
-import { Container, Row, Col, Card, Spinner } from 'react-bootstrap'
+import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap'
 import snow from '../img/snow.avif'
 import sun from '../img/sun.jpg'
 import cloud from '../img/cloud.jpg'
 import rain from '../img/rain.jpeg'
+import fog from '../img/nebbia.webp'
+import { Link } from 'react-router-dom'
 
 const Cities = () => {
   const cityList = [
-    'New York',
-    'Tokyo',
-    'London',
-    'Paris',
-    'Berlin',
+    'Cinisello Balsamo',
+    'Fiano Romano',
+    'Napoli',
+    'Pechino',
+    'Bilbao',
     'Sydney',
     'Moscow',
-    'Rome',
+    'Kiev',
   ]
 
   const [citiesWeather, setCitiesWeather] = useState([])
@@ -37,7 +39,7 @@ const Cities = () => {
 
             const data = await response.json()
 
-            console.log('API Response:', data) // Log della risposta API per il debug
+            console.log('API Response:', data)
 
             if (data.cod === 200) {
               return {
@@ -53,7 +55,7 @@ const Cities = () => {
         setCitiesWeather(weatherData)
         setLoading(false)
       } catch (error) {
-        console.log('Error:', error) // Log per l'errore
+        console.log('Error:', error)
         setError('Errore nel recupero dei dati meteo.')
         setLoading(false)
       }
@@ -71,6 +73,8 @@ const Cities = () => {
         return `${rain}`
       case 'Snow':
         return `${snow}`
+      case 'Fog':
+        return `${fog}`
       default:
         return `${''}`
     }
@@ -109,6 +113,11 @@ const Cities = () => {
                 <Card.Text>
                   <strong>Temperatura:</strong> {cityWeather.temperature}°C
                 </Card.Text>
+                <Link to={`/details/${cityWeather.city}`}>
+                  <Button variant="outline-primary" className="btn-lg">
+                    Mostra dettagli
+                  </Button>
+                </Link>
               </Card.Body>
             </Card>
           </Col>

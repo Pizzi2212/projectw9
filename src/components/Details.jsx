@@ -1,16 +1,19 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Container, Card, Spinner, Row, Col } from 'react-bootstrap'
+import { Button, Container, Card, Spinner, Row, Col } from 'react-bootstrap'
 import snow from '../img/snow.avif'
 import sun from '../img/sun.jpg'
 import cloud from '../img/cloud.jpg'
 import rain from '../img/rain.jpeg'
+import fog from '../img/nebbia.webp'
 
 const Details = () => {
   const { city } = useParams()
   const [temperature, setTemperature] = useState(null)
   const [weather, setWeather] = useState(null)
   const [weatherIcon, setWeatherIcon] = useState('')
+  const [visibility, setVisibility] = useState('')
+  const [timezone, setTimezone] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -32,6 +35,8 @@ const Details = () => {
         if (data.main && data.weather) {
           setTemperature(data.main.temp)
           setWeather(data.weather[0].description)
+          setVisibility((data.visibility / 1000).toFixed(1))
+          setTimezone(data.timezone)
           setWeatherIcon(getWeatherIcon(data.weather[0].main))
         } else {
           setError('Dati meteo non disponibili per questa città.')
@@ -54,6 +59,8 @@ const Details = () => {
         return `${rain}`
       case 'Snow':
         return `${snow}`
+      case 'Fog':
+        return `${fog}`
       default:
         return `${''}`
     }
@@ -75,7 +82,23 @@ const Details = () => {
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col xs={12} md={8} lg={6}>
-          <Card className="shadow-lg rounded-4 overflow-hidden">
+          <Card
+            style={{
+              backgroundColor:
+                weatherIcon === `${snow}`
+                  ? 'white'
+                  : weatherIcon === `${sun}`
+                  ? 'skyblue'
+                  : weatherIcon === `${rain}`
+                  ? 'blue'
+                  : weatherIcon === `${cloud}`
+                  ? 'gray'
+                  : weatherIcon === `${fog}`
+                  ? 'whitesmoke'
+                  : 'white',
+            }}
+            className="shadow-lg rounded-4 overflow-hidden"
+          >
             <Card.Img variant="top" src={weatherIcon} alt={weather} />
             <Card.Body>
               <Card.Title className="display-4">{city}</Card.Title>
@@ -84,6 +107,13 @@ const Details = () => {
               </Card.Text>
               <Card.Text>
                 <strong>Temperatura:</strong> {temperature}°C
+              </Card.Text>
+              <Card.Text>
+                <strong>Visibilità:</strong> {visibility}Km
+              </Card.Text>
+              <Card.Text>
+                <strong>Timezone:</strong>
+                {timezone}m
               </Card.Text>
             </Card.Body>
           </Card>
