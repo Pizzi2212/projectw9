@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import MyNav from './components/MyNav'
+import MyMeteo from './components/MainComponent'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import React, { useState } from 'react'
+import MyFooter from './components/MyFooter'
+import Details from './components/Details'
+import Cities from './components/Cities'
 
 function App() {
+  const [city, setCity] = useState('Tokyo')
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <div>
+        <header>
+          <MyNav searcher={city} setSearcher={setCity} subtitle="Weather" />
+        </header>
+        <main>
+          <Routes>
+            <Route
+              path="/"
+              element={<MyMeteo city={city} setCity={setCity} />}
+            />
+            <Route path="/details/:city" element={<Details />} />
+            <Route path="/Cities" element={<Cities />} />
+          </Routes>
+        </main>
+        <footer>
+          <MyFooter />
+        </footer>
+      </div>
+    </Router>
+  )
 }
 
-export default App;
+export default App
